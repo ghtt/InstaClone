@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">InstaClone</string>
+    <string name="action_settings">Settings</string>
+    <string name="pref_username">Username</string>
+    <string name="pref_username_key">username</string>
+
+    <string name="login_button">Sign in</string>
+    
+    <string name="application_id">301257897691713</string>
+    <string name="instagram_app_id">2314713142171712</string>
+
+    <string name="auth_url">https://api.instagram.com/oauth/</string>
+    <string name="redirect_uri">https://socialsizzle.herokuapp.com/auth/</string>
+    <string name="scope">user_profile,user_media</string>
+
+    <string name="client_secret">a59d8e5452152ba411ddb7a1063977fe</string>
+    <string name="grant_type">authorization_code</string>
+</resources>
