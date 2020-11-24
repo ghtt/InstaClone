@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.akrasnoyarov.instaclone.adapter.PostFeedAdapter;
 import com.akrasnoyarov.instaclone.api.ClientController;
 import com.akrasnoyarov.instaclone.database.entity.MediaEntity;
 import com.akrasnoyarov.instaclone.repository.InstaCloneRepository;
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         // save usertoken in memory and in sharedpreferences
         sUserToken = token;
         mPreferences.putString(ApplicationPreferences.USER_TOKEN, token);
+        Log.d("myLogs", sUserToken);
 
         // if username is empty, get it from api, else load the media
         if (mPreferences.getString(ApplicationPreferences.USER_NAME).equals("")) {
@@ -134,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
 
     @Override
     public void onUsernameReceived(String username) {
+        mButtonSignIn.setVisibility(View.GONE);
         Log.d("myLogs", "onUsernameReceived");
         // save username in pref
         mPreferences.putString(ApplicationPreferences.USER_NAME, username);

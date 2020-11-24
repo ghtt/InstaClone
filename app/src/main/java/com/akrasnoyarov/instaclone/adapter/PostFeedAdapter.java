@@ -1,4 +1,4 @@
-package com.akrasnoyarov.instaclone;
+package com.akrasnoyarov.instaclone.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.akrasnoyarov.instaclone.R;
 import com.akrasnoyarov.instaclone.database.entity.MediaEntity;
 import com.bumptech.glide.Glide;
 
@@ -38,10 +41,15 @@ public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFe
     public void onBindViewHolder(@NonNull PostFeedHolder holder, int position) {
         holder.mTextViewUsername.setText(mMedia.get(position).getUsername());
         holder.mTextViewCaption.setText(mMedia.get(position).getCaption());
-        Glide.with(mContext).load(mMedia.get(position).getMediaUrl())
-                .placeholder(android.R.drawable.progress_indeterminate_horizontal)
-                .into(holder.mImageViewPost);
-
+        if (mMedia.get(position).getMediaType().equals("VIDEO")) {
+            holder.mImageViewPost.setVisibility(View.GONE);
+            holder.mVideoView.setVideoPath(mMedia.get(position).getMediaUrl());
+        } else {
+            holder.mVideoView.setVisibility(View.GONE);
+            Glide.with(mContext).load(mMedia.get(position).getMediaUrl())
+                    .placeholder(android.R.drawable.progress_indeterminate_horizontal)
+                    .into(holder.mImageViewPost);
+        }
     }
 
     @Override
@@ -56,6 +64,7 @@ public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFe
 
     class PostFeedHolder extends RecyclerView.ViewHolder {
         ImageView mImageViewUserAvatar, mImageViewPost;
+        VideoView mVideoView;
         TextView mTextViewUsername, mTextViewFooterUsername, mTextViewCaption;
         ImageButton mImageButtonLike, mImageButtonComment, mImageButtonReply;
 
@@ -63,6 +72,12 @@ public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFe
             super(itemView);
             mImageViewUserAvatar = itemView.findViewById(R.id.iv_user_avatar);
             mImageViewPost = itemView.findViewById(R.id.iv_post_img);
+
+            mVideoView = itemView.findViewById(R.id.iv_post_video);
+            MediaController mediaController = new MediaController(mContext);
+            mVideoView.setMediaController(mediaController);
+            //mediaController.setAnchorView(mVideoView);
+
 
             mTextViewUsername = itemView.findViewById(R.id.tv_user_name);
             mTextViewFooterUsername = itemView.findViewById(R.id.tv_footer_user_name);

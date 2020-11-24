@@ -170,7 +170,7 @@ public class ClientController {
                     } else {
                         try {
                             okhttp3.ResponseBody errorBody = response.errorBody();
-                            if (errorBody !=null) {
+                            if (errorBody != null) {
                                 String error = errorBody.string();
                                 if (error.contains("Error validating access token: Session has expired")) {
                                     Log.d("myLogs", "userToken is expired, trying to renew");

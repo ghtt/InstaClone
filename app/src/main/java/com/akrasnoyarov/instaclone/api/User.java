@@ -4,14 +4,6 @@ package com.akrasnoyarov.instaclone.api;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * {
- * "account_type": "PERSONAL",
- * "id": "17841402892999832",
- * "media_count": 66,
- * "username": "akrasnoyarov"
- * }
- */
 public class User {
     private String id;
     private String username;
