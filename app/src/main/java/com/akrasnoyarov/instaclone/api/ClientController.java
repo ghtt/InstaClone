@@ -165,7 +165,7 @@ public class ClientController {
                             );
 
                             viewModel.addMedia(mediaEntity);
-                            Log.d("myLogs", "caption=" + media.getCaption());
+                            Log.d("myLogs", media.getMediaType() + " url: " + media.getMediaUrl() + "\ncaption=" + media.getCaption());
                         }
                     } else {
                         try {

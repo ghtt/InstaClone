@@ -1,6 +1,7 @@
 package com.akrasnoyarov.instaclone.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +24,13 @@ import java.util.List;
 public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFeedHolder> {
     private LayoutInflater mInflater;
     private List<MediaEntity> mMedia;
+    private MediaController mediaController;
     private Context mContext;
 
     public PostFeedAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         mContext = context;
+        mediaController = new MediaController(mContext);
     }
 
     @NonNull
@@ -43,9 +46,22 @@ public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFe
         holder.mTextViewCaption.setText(mMedia.get(position).getCaption());
         if (mMedia.get(position).getMediaType().equals("VIDEO")) {
             holder.mImageViewPost.setVisibility(View.GONE);
-            holder.mVideoView.setVideoPath(mMedia.get(position).getMediaUrl());
+            holder.mVideoView.setVisibility(View.VISIBLE);
+
+            mediaController= new MediaController(mContext);
+            holder.mVideoView.setVideoURI(Uri.parse(mMedia.get(position).getMediaUrl()));
+            mediaController.setAnchorView(holder.mVideoView);
+            holder.mVideoView.setMediaController(mediaController);
+            try {
+                holder.mVideoView.start();
+            }
+            catch (Exception e) {
+                Log.d("myLogs", "exception during playback: " + e.getLocalizedMessage());
+            }
         } else {
             holder.mVideoView.setVisibility(View.GONE);
+            holder.mImageViewPost.setVisibility(View.VISIBLE);
+
             Glide.with(mContext).load(mMedia.get(position).getMediaUrl())
                     .placeholder(android.R.drawable.progress_indeterminate_horizontal)
                     .into(holder.mImageViewPost);
@@ -72,17 +88,10 @@ public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFe
             super(itemView);
             mImageViewUserAvatar = itemView.findViewById(R.id.iv_user_avatar);
             mImageViewPost = itemView.findViewById(R.id.iv_post_img);
-
             mVideoView = itemView.findViewById(R.id.iv_post_video);
-            MediaController mediaController = new MediaController(mContext);
-            mVideoView.setMediaController(mediaController);
-            //mediaController.setAnchorView(mVideoView);
-
-
             mTextViewUsername = itemView.findViewById(R.id.tv_user_name);
             mTextViewFooterUsername = itemView.findViewById(R.id.tv_footer_user_name);
             mTextViewCaption = itemView.findViewById(R.id.tv_caption);
-
             mImageButtonLike = itemView.findViewById(R.id.ib_like);
             mImageButtonReply = itemView.findViewById(R.id.ib_reply);
             mImageButtonComment = itemView.findViewById(R.id.ib_comment);
