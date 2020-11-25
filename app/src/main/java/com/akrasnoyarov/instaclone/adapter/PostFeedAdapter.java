@@ -48,7 +48,6 @@ public class PostFeedAdapter extends RecyclerView.Adapter<PostFeedAdapter.PostFe
             holder.mImageViewPost.setVisibility(View.GONE);
             holder.mVideoView.setVisibility(View.VISIBLE);
 
-            mediaController= new MediaController(mContext);
             holder.mVideoView.setVideoURI(Uri.parse(mMedia.get(position).getMediaUrl()));
             mediaController.setAnchorView(holder.mVideoView);
             holder.mVideoView.setMediaController(mediaController);
