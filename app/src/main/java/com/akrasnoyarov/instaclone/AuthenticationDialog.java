@@ -38,7 +38,7 @@ public class AuthenticationDialog extends Dialog {
                 "&scope=" + scope +
                 "&response_type=code";
 
-        Log.d("myLogs", request);
+        Log.d("myLogs", "Auth dialog onCreate: " + request);
         webView = findViewById(R.id.web_view_auth);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(request);
@@ -56,6 +56,7 @@ public class AuthenticationDialog extends Dialog {
 
 
                     String access_token = uri.getQuery().substring(uri.getQuery().indexOf("=") + 1);
+                    Log.d("myLogs", "Auth dialog access_token: " + access_token);
                     mListener.onOAuthTokenReceived(access_token);
                 }
                 AuthenticationDialog.this.dismiss();

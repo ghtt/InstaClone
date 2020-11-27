@@ -4,4 +4,9 @@
         android:key="@string/pref_username_key"
         android:selectable="false"
         android:title="@string/pref_username" />
+
+    <Preference
+        android:key="logoutButton"
+        android:layout="@layout/pref_logout_button" />
+
 </PreferenceScreen>

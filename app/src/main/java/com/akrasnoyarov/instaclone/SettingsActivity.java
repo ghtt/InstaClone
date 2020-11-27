@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceScreen;
 
 import com.akrasnoyarov.instaclone.fragment.SettingsFragment;
 
@@ -48,10 +50,12 @@ public class SettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             onBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     private void getUsername(Intent intent) {
         String username = intent.getStringExtra(ApplicationPreferences.USER_NAME);

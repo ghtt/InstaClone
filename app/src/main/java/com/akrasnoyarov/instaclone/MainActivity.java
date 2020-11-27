@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         setContentView(R.layout.activity_main);
 
         initializePreferences();
+        Log.d("myLogs", "activity = " + this.toString());
 
         mLoading = findViewById(R.id.pb_loading);
         mButtonSignIn = findViewById(R.id.button_login);
@@ -53,8 +54,12 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         mRecyclerViewPostFeed.setAdapter(mAdapter);
         mRecyclerViewPostFeed.setLayoutManager(new LinearLayoutManager(this));
 
+        Log.d("myLogs", "MainActivity onCreate");
+
         if (!mPreferences.getString(ApplicationPreferences.USER_NAME).equals("")) {
             mButtonSignIn.setVisibility(View.GONE);
+            mRecyclerViewPostFeed.setVisibility(View.VISIBLE);
+
             mRepository = new InstaCloneRepository(getApplication());
 
             mPostFeedViewModel = new ViewModelProvider(this).get(PostFeedViewModel.class);
@@ -70,11 +75,15 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
 
     @Override
     protected void onStart() {
+        Log.d("myLogs", "onStart");
         super.onStart();
         mClient = ClientController.getInstance(this);
         if (!mPreferences.getString(ApplicationPreferences.USER_TOKEN).equals("")) {
             sUserToken = mPreferences.getString(ApplicationPreferences.USER_TOKEN);
             mClient.getUserMedia(mPostFeedViewModel);
+        } else {
+            mButtonSignIn.setVisibility(View.VISIBLE);
+            mRecyclerViewPostFeed.setVisibility(View.GONE);
         }
     }
 
@@ -100,17 +109,9 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initializePreferences() {
-        mPreferences = new ApplicationPreferences(this);
-    }
-
-    public void signIn(View v) {
-        mClient.authenticate(this);
-    }
-
     @Override
     public void onOAuthTokenReceived(String oAuthToken) {
-        Log.d("myLogs", oAuthToken);
+        Log.d("myLogs", "onOAuthTokenReceived: " + oAuthToken);
         mPreferences.putString(ApplicationPreferences.OAUTH_TOKEN, oAuthToken);
         sAuthToken = oAuthToken;
         mLoading.setVisibility(View.VISIBLE);
@@ -119,16 +120,17 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
 
     @Override
     public void onUserTokenReceived(String token) {
-        // save usertoken in memory and in sharedpreferences
+        // save user token in memory and in shared preferences
         sUserToken = token;
         mPreferences.putString(ApplicationPreferences.USER_TOKEN, token);
-        Log.d("myLogs", sUserToken);
+        Log.d("myLogs", "onUserTokenReceived: " + sUserToken);
 
         // if username is empty, get it from api, else load the media
         if (mPreferences.getString(ApplicationPreferences.USER_NAME).equals("")) {
             mClient.getUser();
         } else {
             mButtonSignIn.setVisibility(View.GONE);
+            mRecyclerViewPostFeed.setVisibility(View.VISIBLE);
             onUsernameReceived(mPreferences.getString(ApplicationPreferences.USER_NAME));
         }
 
@@ -136,7 +138,9 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
 
     @Override
     public void onUsernameReceived(String username) {
+        mRecyclerViewPostFeed.setVisibility(View.VISIBLE);
         mButtonSignIn.setVisibility(View.GONE);
+
         Log.d("myLogs", "onUsernameReceived");
         // save username in pref
         mPreferences.putString(ApplicationPreferences.USER_NAME, username);
@@ -161,4 +165,13 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
     public void onReauthRequired() {
         mClient.authenticate(this);
     }
+
+    private void initializePreferences() {
+        mPreferences = new ApplicationPreferences(this);
+    }
+
+    public void signIn(View v) {
+        mClient.authenticate(this);
+    }
+
 }

@@ -57,11 +57,14 @@ public class ClientController {
     }
 
     public void authenticate(Context context) {
+        Log.d("myLogs", "authenticate");
         AuthenticationDialog dialog = new AuthenticationDialog(context, mListener);
         dialog.show();
     }
 
     public void getUserToken(Context context) {
+        sAuthorized = false;
+
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
@@ -109,6 +112,7 @@ public class ClientController {
 
     public void getUser() {
         Log.d("myLogs", "enter getUser");
+        Log.d("myLogs", "getUser Authorized = " + sAuthorized);
         if (!sAuthorized) {
             Call<User> call = service.getUser("account_type,id,username,media_count", MainActivity.sUserToken);
             call.enqueue(new Callback<User>() {
@@ -123,8 +127,8 @@ public class ClientController {
 
                         String username = user.getUsername();
 
-                        mListener.onUsernameReceived(username);
                         sAuthorized = true;
+                        mListener.onUsernameReceived(username);
 
                     } else {
                         try {
@@ -145,7 +149,9 @@ public class ClientController {
 
     public void getUserMedia(PostFeedViewModel viewModel) {
         Log.d("myLogs", "enter getUserMedia");
-        if (!sAuthorized) {
+        Log.d("myLogs", "getUserMedia Authorized = " + sAuthorized);
+
+        if (sAuthorized) {
             Call<Data> call = service.getUserMedia("caption,id,permalink,thumbnail_url,username,media_type,media_url", MainActivity.sUserToken);
             call.enqueue(new Callback<Data>() {
                 @Override
@@ -165,8 +171,10 @@ public class ClientController {
                             );
 
                             viewModel.addMedia(mediaEntity);
-                            Log.d("myLogs", media.getMediaType() + " url: " + media.getMediaUrl() + "\ncaption=" + media.getCaption());
+//                            Log.d("myLogs", media.getMediaType() + " url: " + media.getMediaUrl() + "\ncaption=" + media.getCaption());
                         }
+
+                        Log.d("myLogs", "userMedia are received");
                     } else {
                         try {
                             okhttp3.ResponseBody errorBody = response.errorBody();
