@@ -2,7 +2,6 @@ package com.akrasnoyarov.instaclone;
 
 import android.app.Application;
 
-import com.akrasnoyarov.instaclone.api.AppExecutors;
 import com.akrasnoyarov.instaclone.database.InstaCloneDatabase;
 import com.akrasnoyarov.instaclone.repository.InstaCloneRepository;
 

@@ -1,4 +1,4 @@
-package com.akrasnoyarov.instaclone.api;
+package com.akrasnoyarov.instaclone;
 
 import android.os.Handler;
 import android.os.Looper;

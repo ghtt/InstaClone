@@ -1,13 +1,10 @@
 package com.akrasnoyarov.instaclone.api;
 
 
-import android.content.Context;
 import android.util.Log;
 
 import com.akrasnoyarov.instaclone.AuthListener;
-import com.akrasnoyarov.instaclone.AuthenticationDialog;
 import com.akrasnoyarov.instaclone.MainActivity;
-import com.akrasnoyarov.instaclone.R;
 import com.akrasnoyarov.instaclone.database.entity.MediaEntity;
 import com.akrasnoyarov.instaclone.viewmodel.PostFeedViewModel;
 import com.google.gson.Gson;
@@ -56,13 +53,8 @@ public class ClientController {
         return sInstance;
     }
 
-    public void authenticate(Context context) {
-        Log.d("myLogs", "authenticate");
-        AuthenticationDialog dialog = new AuthenticationDialog(context, mListener);
-        dialog.show();
-    }
 
-    public void getUserToken(Context context) {
+    public void getUserToken(String authUrl, String instagramApplicationId, String secret, String grantType, String redirectUri) {
         sAuthorized = false;
 
         Gson gson = new GsonBuilder()
@@ -70,7 +62,7 @@ public class ClientController {
                 .create();
 
         Retrofit retrofitOauth = new Retrofit.Builder()
-                .baseUrl(context.getResources().getString(R.string.auth_url))
+                .baseUrl(authUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
@@ -79,11 +71,11 @@ public class ClientController {
 
         // generate POST request
         Call<ResponseBody> call = oAuthService.getUserTokenUsingFields(
-                context.getResources().getString(R.string.instagram_app_id),
-                context.getResources().getString(R.string.client_secret),
+                instagramApplicationId,
+                secret,
                 MainActivity.sAuthToken,
-                context.getResources().getString(R.string.grant_type),
-                context.getResources().getString(R.string.redirect_uri));
+                grantType,
+                redirectUri);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

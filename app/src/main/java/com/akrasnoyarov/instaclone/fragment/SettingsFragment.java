@@ -67,7 +67,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                            MainActivity.sAuthToken = "";
                            MainActivity.sUserToken = "";
 
-                           return false;
+                           return true;
                        }
                    });
             }

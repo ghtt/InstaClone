@@ -8,7 +8,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.akrasnoyarov.instaclone.api.AppExecutors;
 import com.akrasnoyarov.instaclone.database.dao.MediaDao;
 import com.akrasnoyarov.instaclone.database.entity.MediaEntity;
 

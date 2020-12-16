@@ -18,13 +18,13 @@ public class AuthenticationDialog extends Dialog {
     private WebView webView;
     private final AuthListener mListener;
 
-    public AuthenticationDialog(@NonNull Context context, AuthListener listener) {
+    public AuthenticationDialog(@NonNull Context context) {
         super(context);
         requestUrl = context.getString(R.string.auth_url);
         instagramAppId = context.getString(R.string.instagram_app_id);
         redirectUri = context.getString(R.string.redirect_uri);
         scope = context.getString(R.string.scope);
-        mListener = listener;
+        mListener = (AuthListener) context;
     }
 
     @Override

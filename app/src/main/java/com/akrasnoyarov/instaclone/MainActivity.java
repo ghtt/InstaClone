@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,16 +60,8 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         if (!mPreferences.getString(ApplicationPreferences.USER_NAME).equals("")) {
             mButtonSignIn.setVisibility(View.GONE);
             mRecyclerViewPostFeed.setVisibility(View.VISIBLE);
-
-            mRepository = new InstaCloneRepository(getApplication());
-
-            mPostFeedViewModel = new ViewModelProvider(this).get(PostFeedViewModel.class);
-            mPostFeedViewModel.getAllUserMedia().observe(this, new Observer<List<MediaEntity>>() {
-                @Override
-                public void onChanged(final List<MediaEntity> mediaEntities) {
-                    mAdapter.setMedia(mediaEntities);
-                }
-            });
+            // initialize room db + viewmodel
+            initializeDbAndViewModel();
         }
     }
 
@@ -115,7 +108,12 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         mPreferences.putString(ApplicationPreferences.OAUTH_TOKEN, oAuthToken);
         sAuthToken = oAuthToken;
         mLoading.setVisibility(View.VISIBLE);
-        mClient.getUserToken(this);
+        mClient.getUserToken(
+                getString(R.string.auth_url),
+                getString(R.string.instagram_app_id),
+                getString(R.string.client_secret),
+                getString(R.string.grant_type),
+                getString(R.string.redirect_uri));
     }
 
     @Override
@@ -146,14 +144,7 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
         mPreferences.putString(ApplicationPreferences.USER_NAME, username);
 
         // init room db + viewmodel
-        mRepository = new InstaCloneRepository(getApplication());
-        mPostFeedViewModel = new ViewModelProvider(this).get(PostFeedViewModel.class);
-        mPostFeedViewModel.getAllUserMedia().observe(this, new Observer<List<MediaEntity>>() {
-            @Override
-            public void onChanged(final List<MediaEntity> mediaEntities) {
-                mAdapter.setMedia(mediaEntities);
-            }
-        });
+        initializeDbAndViewModel();
 
         // get all user media
         mClient.getUserMedia(mPostFeedViewModel);
@@ -163,15 +154,32 @@ public class MainActivity extends AppCompatActivity implements AuthListener {
 
     @Override
     public void onReauthRequired() {
-        mClient.authenticate(this);
+        authenticate();
     }
 
     private void initializePreferences() {
         mPreferences = new ApplicationPreferences(this);
     }
 
+    private void initializeDbAndViewModel() {
+        mRepository = new InstaCloneRepository(getApplication());
+        mPostFeedViewModel = new ViewModelProvider(this).get(PostFeedViewModel.class);
+        mPostFeedViewModel.getAllUserMedia().observe(this, new Observer<List<MediaEntity>>() {
+            @Override
+            public void onChanged(final List<MediaEntity> mediaEntities) {
+                mAdapter.setMedia(mediaEntities);
+            }
+        });
+    }
+
+    private void authenticate() {
+        Log.d("myLogs", "authenticate");
+        AuthenticationDialog dialog = new AuthenticationDialog(this);
+        dialog.show();
+    }
+
     public void signIn(View v) {
-        mClient.authenticate(this);
+        authenticate();
     }
 
 }
